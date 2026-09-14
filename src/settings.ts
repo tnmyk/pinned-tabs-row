@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting, SettingDefinitionItem } from 'obsidian';
+import { App, PluginSettingTab, Setting } from 'obsidian';
 import PinnedTabsRowPlugin from './main';
 
 export interface PinnedTabsRowSettings {
@@ -19,10 +19,6 @@ export class PinnedTabsRowSettingTab extends PluginSettingTab {
 		this.plugin = plugin;
 	}
 
-	private applySettings(): void {
-		this.plugin.pinnedTabsRow.applySettings(this.plugin.settings);
-	}
-
 	display(): void {
 		const { containerEl } = this;
 
@@ -37,7 +33,7 @@ export class PinnedTabsRowSettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.enabled = value;
 						await this.plugin.saveSettings();
-						this.applySettings();
+						this.plugin.pinnedTabsRow.applySettings(this.plugin.settings);
 					}),
 			);
 
@@ -50,36 +46,8 @@ export class PinnedTabsRowSettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.compactPinned = value;
 						await this.plugin.saveSettings();
-						this.applySettings();
+						this.plugin.pinnedTabsRow.applySettings(this.plugin.settings);
 					}),
 			);
-	}
-
-	getSettingDefinitions(): SettingDefinitionItem[] {
-		return [
-			{
-				name: 'Pinned tabs row',
-				desc: 'Show pinned tabs in a separate row above the tab bar.',
-				control: {
-					type: 'toggle',
-					key: 'enabled',
-				},
-			},
-			{
-				name: 'Compact pinned tabs',
-				desc: 'Show pinned tabs as an icon-only strip.',
-				control: {
-					type: 'toggle',
-					key: 'compactPinned',
-				},
-			},
-		];
-	}
-
-	async setControlValue(key: string, value: unknown): Promise<void> {
-		await super.setControlValue(key, value);
-		if (key === 'enabled' || key === 'compactPinned') {
-			this.applySettings();
-		}
 	}
 }
