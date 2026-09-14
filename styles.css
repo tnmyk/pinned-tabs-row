@@ -1,9 +1,28 @@
-.workspace-tab-header-container-inner {
-	flex-wrap: wrap;
-}
+/*
+Pinned Tabs Row: splits pinned tabs into their own row above the tab bar.
+All rules are scoped to tab bars that contain at least one pinned tab
+(:has(.mod-pinned)), so unpinned-only bars keep Obsidian's default look.
+*/
 
 .workspace-tab-header-container:has(.mod-pinned) {
 	height: auto;
+}
+
+.workspace-tab-header-container:has(.mod-pinned) .workspace-tab-header-container-inner {
+	flex-wrap: wrap;
+}
+
+.workspace .mod-root .workspace-tab-header-container:has(.mod-pinned) .workspace-tab-header {
+	flex: 0 1 auto;
+}
+
+.workspace .mod-root .workspace-tab-header-container:has(.mod-pinned) .workspace-tab-header:not(.is-active) .workspace-tab-header-inner-close-button {
+	display: flex;
+	visibility: hidden;
+}
+
+.workspace .mod-root .workspace-tab-header-container:has(.mod-pinned) .workspace-tab-header:not(.is-active):hover .workspace-tab-header-inner-close-button {
+	visibility: visible;
 }
 
 .workspace-tab-header:has(.mod-pinned) {
