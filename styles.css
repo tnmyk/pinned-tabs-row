@@ -1,46 +1,104 @@
 /*
 Pinned Tabs Row: splits pinned tabs into their own row above the tab bar.
-All rules are scoped to tab bars that contain at least one pinned tab
-(:has(.mod-pinned)), so unpinned-only bars keep Obsidian's default look.
+CSS-only: the tab bar becomes a CSS grid (pinned row 1, divider row 2,
+unpinned row 3). Each row scrolls horizontally when full, like Obsidian's
+native bar. Rules are scoped to body.pinned-tabs-row-enabled (plugin on)
+and tab bars with at least one pinned tab (:has(.mod-pinned)).
 */
 
-.workspace-tab-header-container:has(.mod-pinned) {
+/* Bar grows to fit both rows while pins exist */
+body.pinned-tabs-row-enabled .workspace-tab-header-container:has(.mod-pinned) {
 	height: auto;
 }
 
-.workspace-tab-header-container:has(.mod-pinned) .workspace-tab-header-container-inner {
-	flex-wrap: wrap;
+/* Grid layout for the tab bar */
+body.pinned-tabs-row-enabled
+	.workspace-tab-header-container:has(.mod-pinned)
+	.workspace-tab-header-container-inner {
+	display: grid;
+	grid-template-rows: auto auto auto;
 }
 
-.workspace .mod-root .workspace-tab-header-container:has(.mod-pinned) .workspace-tab-header {
-	flex: 0 1 auto;
-}
-
-.workspace .mod-root .workspace-tab-header-container:has(.mod-pinned) .workspace-tab-header:not(.is-active) .workspace-tab-header-inner-close-button {
-	display: flex;
-	visibility: hidden;
-}
-
-.workspace .mod-root .workspace-tab-header-container:has(.mod-pinned) .workspace-tab-header:not(.is-active):hover .workspace-tab-header-inner-close-button {
-	visibility: visible;
-}
-
-.workspace-tab-header:has(.mod-pinned) {
-	order: 1;
-}
-
-.workspace-tab-header:not(:has(.mod-pinned)) {
-	order: 3;
-}
-
-.pinned-tabs-row {
-	order: 2;
-	flex: 1 1 100%;
+/* Divider between pinned and unpinned rows */
+body.pinned-tabs-row-enabled
+	.workspace-tab-header-container-inner:has(
+		.workspace-tab-header:not(:has(.mod-pinned))
+	)::before {
+	content: '';
+	grid-row: 2;
 	height: 0;
 	margin: 0 0 6px;
 	border-bottom: 1px solid var(--background-modifier-border);
 }
 
-.workspace-tab-header-container-inner:not(:has(.mod-pinned)) .pinned-tabs-row {
+/* Row assignment */
+body.pinned-tabs-row-enabled
+	.workspace-tab-header-container:has(.mod-pinned)
+	.workspace-tab-header:has(.mod-pinned) {
+	grid-row: 1;
+}
+
+body.pinned-tabs-row-enabled
+	.workspace-tab-header-container:has(.mod-pinned)
+	.workspace-tab-header:not(:has(.mod-pinned)) {
+	grid-row: 3;
+}
+
+/* Fixed content-sized tabs instead of growing to fill the row */
+body.pinned-tabs-row-enabled
+	.workspace
+	.mod-root
+	.workspace-tab-header-container:has(.mod-pinned)
+	.workspace-tab-header {
+	flex: 0 1 auto;
+}
+
+/* Reserve the close-button slot so hover does not reflow the row */
+body.pinned-tabs-row-enabled
+	.workspace
+	.mod-root
+	.workspace-tab-header-container:has(.mod-pinned)
+	.workspace-tab-header:not(.is-active)
+	.workspace-tab-header-inner-close-button {
+	display: flex;
+	visibility: hidden;
+}
+
+body.pinned-tabs-row-enabled
+	.workspace
+	.mod-root
+	.workspace-tab-header-container:has(.mod-pinned)
+	.workspace-tab-header:not(.is-active):hover
+	.workspace-tab-header-inner-close-button {
+	visibility: visible;
+}
+
+/* Compact mode: pinned tabs as an icon-only strip */
+body.pinned-tabs-row-enabled.pinned-tabs-row-compact
+	.workspace
+	.mod-root
+	.workspace-tab-header-container:has(.mod-pinned)
+	.workspace-tab-header:has(.mod-pinned) {
+	width: auto;
+	min-width: 0;
+	max-width: none;
+	padding-inline: 8px;
+}
+
+body.pinned-tabs-row-enabled.pinned-tabs-row-compact
+	.workspace
+	.mod-root
+	.workspace-tab-header-container:has(.mod-pinned)
+	.workspace-tab-header:has(.mod-pinned)
+	.workspace-tab-header-inner-title {
+	display: none;
+}
+
+body.pinned-tabs-row-enabled.pinned-tabs-row-compact
+	.workspace
+	.mod-root
+	.workspace-tab-header-container:has(.mod-pinned)
+	.workspace-tab-header:has(.mod-pinned)
+	.workspace-tab-header-inner::after {
 	display: none;
 }

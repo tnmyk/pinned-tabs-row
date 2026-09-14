@@ -3,10 +3,12 @@ import PinnedTabsRowPlugin from './main';
 
 export interface PinnedTabsRowSettings {
 	enabled: boolean;
+	compactPinned: boolean;
 }
 
 export const DEFAULT_SETTINGS: PinnedTabsRowSettings = {
 	enabled: true,
+	compactPinned: false,
 };
 
 export class PinnedTabsRowSettingTab extends PluginSettingTab {
@@ -15,6 +17,10 @@ export class PinnedTabsRowSettingTab extends PluginSettingTab {
 	constructor(app: App, plugin: PinnedTabsRowPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
+	}
+
+	private applySettings(): void {
+		this.plugin.pinnedTabsRow.applySettings(this.plugin.settings);
 	}
 
 	display(): void {
@@ -31,7 +37,20 @@ export class PinnedTabsRowSettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.enabled = value;
 						await this.plugin.saveSettings();
-						this.plugin.pinnedTabsRow.setEnabled(value);
+						this.applySettings();
+					}),
+			);
+
+		new Setting(containerEl)
+			.setName('Compact pinned tabs')
+			.setDesc('Show pinned tabs as an icon-only strip.')
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.compactPinned)
+					.onChange(async (value) => {
+						this.plugin.settings.compactPinned = value;
+						await this.plugin.saveSettings();
+						this.applySettings();
 					}),
 			);
 	}
@@ -46,13 +65,21 @@ export class PinnedTabsRowSettingTab extends PluginSettingTab {
 					key: 'enabled',
 				},
 			},
+			{
+				name: 'Compact pinned tabs',
+				desc: 'Show pinned tabs as an icon-only strip.',
+				control: {
+					type: 'toggle',
+					key: 'compactPinned',
+				},
+			},
 		];
 	}
 
 	async setControlValue(key: string, value: unknown): Promise<void> {
 		await super.setControlValue(key, value);
-		if (key === 'enabled') {
-			this.plugin.pinnedTabsRow.setEnabled(Boolean(value));
+		if (key === 'enabled' || key === 'compactPinned') {
+			this.applySettings();
 		}
 	}
 }

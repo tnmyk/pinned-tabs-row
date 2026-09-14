@@ -1,4 +1,4 @@
-import { Notice, Plugin } from 'obsidian';
+import { Notice, Plugin, WorkspaceLeaf } from 'obsidian';
 import { PinnedTabsRowManager } from './pinnedTabsRow';
 import {
 	DEFAULT_SETTINGS,
@@ -14,8 +14,7 @@ export default class PinnedTabsRowPlugin extends Plugin {
 		await this.loadSettings();
 
 		this.pinnedTabsRow = new PinnedTabsRowManager(this);
-		this.pinnedTabsRow.start();
-		this.pinnedTabsRow.setEnabled(this.settings.enabled);
+		this.pinnedTabsRow.applySettings(this.settings);
 
 		this.app.workspace.onLayoutReady(() => {
 			new Notice('Pinned tabs row loaded');
@@ -27,6 +26,18 @@ export default class PinnedTabsRowPlugin extends Plugin {
 			callback: () => {
 				const leaf = this.app.workspace.getLeaf(false);
 				if (leaf) leaf.togglePinned();
+			},
+		});
+		this.addCommand({
+			id: 'unpin-all-tabs',
+			name: 'Unpin all tabs',
+			callback: () => {
+				const workspace = this.app.workspace as unknown as {
+					getLeaves(): WorkspaceLeaf[];
+				};
+				workspace.getLeaves().forEach((leaf) => {
+					if (leaf.getViewState().pinned) leaf.setPinned(false);
+				});
 			},
 		});
 		this.addCommand({
