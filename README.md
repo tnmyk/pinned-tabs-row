@@ -1,6 +1,6 @@
 # Pinned Tabs Row
 
-Shows pinned tabs in a separate row above the tab bar, like VS Code and IntelliJ.
+An [Obsidian](https://obsidian.md) plugin that shows pinned tabs in a separate row above the tab bar, like VS Code and IntelliJ.
 
 ## Features
 
