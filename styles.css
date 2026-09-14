@@ -1,8 +1,27 @@
-/*
+.workspace-tab-header-container-inner {
+	flex-wrap: wrap;
+}
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+.workspace-tab-header-container:has(.mod-pinned) {
+	height: auto;
+}
 
-If your plugin does not need CSS, delete this file.
+.workspace-tab-header:has(.mod-pinned) {
+	order: 1;
+}
 
-*/
+.workspace-tab-header:not(:has(.mod-pinned)) {
+	order: 3;
+}
+
+.pinned-tabs-row {
+	order: 2;
+	flex: 1 1 100%;
+	height: 0;
+	margin: 0 0 6px;
+	border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.workspace-tab-header-container-inner:not(:has(.mod-pinned)) .pinned-tabs-row {
+	display: none;
+}
