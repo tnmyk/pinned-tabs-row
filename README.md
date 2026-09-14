@@ -32,9 +32,9 @@ The plugin's JavaScript is minimal: it toggles two body classes for the settings
 
 ## Installation
 
-1. Copy `main.js`, `manifest.json`, and `styles.css` into `<vault>/.obsidian/plugins/pinned-tabs-row/`
-2. Reload Obsidian
-3. Enable **Pinned Tabs Row** in **Settings → Community plugins**
+1. Open **Settings → Community plugins**
+2. Select **Browse**, search for **Pinned Tabs Row**
+3. Install and enable the plugin
 
 ## Usage
 
